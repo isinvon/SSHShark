@@ -20,6 +20,7 @@ def main():
         client,host,username = login_to_server()
         if client:
             record_login(host=host,username=username)
+            cut_line.cut_line()
             start_session(client)
     elif args.upload:  # 上传
         upload_file(args.upload)
