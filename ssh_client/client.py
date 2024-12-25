@@ -165,7 +165,7 @@ def login_to_server():
                                password=saved_password)
                 print("登录成功！")
                 save_password(host, username, saved_password)  # 更新登录记录
-                return client
+                return client,host,username
             except Exception as e:
                 print(f"使用保存的密码登录失败: {str(e)}")
                 password = input("请输入新的密码: ")
@@ -176,14 +176,14 @@ def login_to_server():
             client.connect(hostname=host, username=username, password=password)
             print("登录成功！")
             save_password(host, username, password)  # 保存新密码和登录记录
-            return client
+            return client,host,username
         except Exception as e:
             print(f"登录失败: {str(e)}")
-            return None
+            return None,None,None
 
     except KeyboardInterrupt:
         print("\n程序已被用户中断")
-        return None
+        return None,None,None
 
 
 def upload_file(file_path):

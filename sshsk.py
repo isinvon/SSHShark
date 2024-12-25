@@ -1,6 +1,8 @@
 import argparse
+from database.db import record_login
 from ssh_client.client import login_to_server, upload_file, download_file, start_session
 from developer_only.author import init
+from styles import cut_line
 
 
 
@@ -15,8 +17,9 @@ def main():
     args = parser.parse_args()
     
     if args.login:  # 登录
-        client = login_to_server()
+        client,host,username = login_to_server()
         if client:
+            record_login(host=host,username=username)
             start_session(client)
     elif args.upload:  # 上传
         upload_file(args.upload)
