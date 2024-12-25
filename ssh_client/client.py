@@ -5,6 +5,8 @@ from utils.encryption import decrypt_password
 import os
 import select
 import sys
+from colorama import Fore, Back, Style
+from styles import cut_line
 
 # 检测操作系统类型
 IS_WINDOWS = sys.platform.startswith('win')
@@ -122,10 +124,9 @@ def _unix_shell(channel):
 def display_server_list():
     servers = get_server_list()
     if servers:
-        print("\n可用的服务器列表:")
+        cut_line.cut_line() # 分割线
         print("序号  主机地址              用户名            登录次数    最后登录时间")
-        print("-" * 75)
-
+        cut_line.cut_line() # 分割线
         for idx, (host, username, login_count, last_login) in enumerate(servers, 1):
             print(
                 f"{idx:<6}{host:<20}{username:<16}{login_count:<10}{last_login or '从未登录'}")
