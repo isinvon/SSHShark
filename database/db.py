@@ -32,7 +32,9 @@ class LoginHistory(Base):
 
 
 # 数据库初始化
-DATABASE_URL = 'sqlite:///ssh_credentials.db'
+current_dir = os.path.dirname(os.path.abspath(__file__)) # 获取当前文件所在完整路径
+# DATABASE_URL = 'sqlite:///ssh_credentials.db' # 会生成到项目根目录下
+DATABASE_URL = f'sqlite:///{os.path.join(current_dir, "ssh_credentials.db")}' # 会生成到当前项目同级的位置
 engine = create_engine(DATABASE_URL, echo=False)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base.metadata.create_all(bind=engine)
