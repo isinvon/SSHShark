@@ -146,7 +146,7 @@ def display_server_list():
             table.append([idx, host, username, login_count, last_login or '从未登录'])
         
         headers = ["序号", "主机地址", "用户名", "登录次数", "最后登录时间"]
-        print(tabulate(table, headers, tablefmt="fancy_grid"))
+        print(tabulate(table, headers, tablefmt="fancy_grid",stralign="center"))
         # 使用了表格格式 ----------end---------------
         try:
             choice = input("\n请选择服务器序号 (或按Enter手动输入新服务器): ")
