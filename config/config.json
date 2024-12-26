@@ -1,0 +1,12 @@
+{
+  "name": "SSHShark",
+  "version": "1.0.0",
+  "description": "A elegant python-based SSH CLI Tool",
+  "author": "sinvon",
+  "email": "2021469084#qq.com",
+  "repo": "https://github.com/isinvon/SSHShark",
+  "git": "https://github.com/isinvon/SSHShark.git",
+  "style": {
+    "theme": "green"
+  }
+}
