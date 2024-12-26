@@ -53,13 +53,19 @@ def start_session(client):
         else:
             _unix_shell(channel)
 
+    except KeyboardInterrupt:
+        logUtils.logging_no_print("SSH连接已被用户中断")
+    except paramiko.SSHException as ssh_ex:
+        logUtils.logging_no_print_error(f"SSH 异常: {str(ssh_ex)}")
+    except OSError as os_ex:
+        logUtils.logging_no_print_error(f"网络异常: {str(os_ex)}")
     except Exception as e:
         logUtils.logging_no_print_error(f"会话错误: {str(e)}")
     finally:
         client.close()
-        logUtils.logging_and_print("已退出SSH会话")
-
-
+        print("\n")
+        cut_line.cut_line_msg("end")
+        logUtils.logging_no_print("已退出SSH会话")
 def _windows_shell(channel):
     try:
         # 设置终端环境变量 (解决切换bash的时候回话标头乱码的问题)
