@@ -1,6 +1,7 @@
 import paramiko
 from tqdm import tqdm
 from database.db import save_password, get_password, get_server_list, record_login
+from utils import logUtils
 from utils.encryption import decrypt_password
 import os
 import select
@@ -35,11 +36,11 @@ def execute_command(client, command):
         output = stdout.read().decode()
         error = stderr.read().decode()
         if error:
-            print(f"错误: {error}")
+            logUtils.logging_and_print_error(f"错误: {error}")
         if output:
-            print(output)
+            logUtils.logging_and_print(output)
     except Exception as e:
-        print(f"执行命令时出错: {str(e)}")
+        logUtils.logging_and_print_error(f"执行命令时出错: {str(e)}")
 
 
 def start_session(client):
@@ -53,10 +54,10 @@ def start_session(client):
             _unix_shell(channel)
 
     except Exception as e:
-        print(f"\n会话错误: {str(e)}")
+        logUtils.logging_no_print_error(f"会话错误: {str(e)}")
     finally:
         client.close()
-        print("\nSSH会话已结束")
+        logUtils.logging_and_print("已退出SSH会话")
 
 
 def _windows_shell(channel):
@@ -85,7 +86,7 @@ def _windows_shell(channel):
             if channel.exit_status_ready():
                 break
     except Exception as e:
-        print(f"\n会话错误: {str(e)}")
+        logUtils.logging_and_print_error(f"会话错误: {str(e)}")
 
 
 def _unix_shell(channel):
@@ -136,6 +137,7 @@ def display_server_list():
             if choice.strip():
                 idx = int(choice) - 1
                 if 0 <= idx < len(servers):
+                    logUtils.logging_no_print(f"已选择服务器序号: {idx+1}")
                     return servers[idx][0], servers[idx][1]
         except ValueError:
             pass
@@ -160,29 +162,32 @@ def login_to_server():
 
         if saved_password:
             try:
-                print("使用已保存的密码尝试连接...")
+                logUtils.logging_and_print("使用已保存的密码尝试连接...")
                 client.connect(hostname=host, username=username,
                                password=saved_password)
-                print("登录成功！")
-                save_password(host, username, saved_password)  # 更新登录记录
+                logUtils.logging_and_print("登录成功!")
+                save_password(host, username, saved_password)
+                logUtils.logging_and_print("已经将密码更新到数据库")
                 return client,host,username
             except Exception as e:
-                print(f"使用保存的密码登录失败: {str(e)}")
+                logUtils.logging_and_print_error(f"使用保存的密码登录失败: {str(e)}")
                 password = input("请输入新的密码: ")
         else:
             password = input("请输入密码: ")
 
         try:
             client.connect(hostname=host, username=username, password=password)
-            print("登录成功！")
+            logUtils.logging_and_print("登录成功!")
             save_password(host, username, password)  # 保存新密码和登录记录
             return client,host,username
         except Exception as e:
-            print(f"登录失败: {str(e)}")
+            logUtils.logging_and_print_error(f"登录失败: {str(e)}")
             return None,None,None
 
     except KeyboardInterrupt:
-        print("\n程序已被用户中断")
+        print("\n")
+        cut_line.cut_line_msg("end")
+        logUtils.logging_no_print("程序已被用户中断")
         return None,None,None
 
 

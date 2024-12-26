@@ -6,6 +6,7 @@ import os
 import base64
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from utils import logUtils
 
 Base = declarative_base()
 
@@ -71,7 +72,7 @@ def get_encryption_key():
             f.write(salt)
         with open(key_file, "wb") as f:
             f.write(master_key)
-        print(f"请安全保存你的主密码: {master_password}")
+        # print(f"请安全保存你的主密码: {master_password}")
 
     return master_key
 
@@ -96,10 +97,10 @@ def save_password(host, username, password):
             credential.iv = iv
 
         session.commit()
-        print(f"凭证保存成功: {host}, {username}")
+        logUtils.logging_and_print(f"凭证保存成功: {host}, {username}")
     except Exception as e:
         session.rollback()
-        print(f"保存密码时出错: {str(e)}")
+        logUtils.logging_and_print_error(f"保存密码时出错: {str(e)}")
     finally:
         session.close()
 
@@ -116,10 +117,10 @@ def get_password(host, username):
                 credential.password.encode()).decode()
             return decrypted_password
         else:
-            print("未找到保存的密码")
+            logUtils.logging_and_print_warning(f"未找到保存的密码")
             return None
     except Exception as e:
-        print(f"获取密码时出错: {str(e)}")
+        logUtils.logging_and_print_error(f"获取密码时出错: {str(e)}")
         return None
     finally:
         session.close()
@@ -135,12 +136,13 @@ def record_login(host, username):
             login = LoginHistory(credential=credential)
             session.add(login)
             session.commit()
-            print(f"登录记录保存成功: {host}, {username}")
+            # print(f"登录记录保存成功: {host}, {username}")
+            logUtils.logging_and_print(f"登录记录保存成功: {host}, {username}")
         else:
-            print("未找到相关凭证，无法记录登录")
+            logUtils.logging_and_print_warning(f"未找到相关凭证，无法记录登录")
     except Exception as e:
         session.rollback()
-        print(f"记录登录历史时出错: {str(e)}")
+        logUtils.logging_and_print_error(f"记录登录历史时出错: {str(e)}")
     finally:
         session.close()
 
@@ -159,10 +161,10 @@ def get_server_list():
         if results:
             return results
         else:
-            print("没有保存的服务器记录")
+            logUtils.logging_and_print_warning("没有保存的服务器记录")
             return []
     except Exception as e:
-        print(f"获取服务器列表时出错: {str(e)}")
+        logUtils.logging_and_print_error(f"获取服务器列表时出错: {str(e)}")
         return []
     finally:
         session.close()
