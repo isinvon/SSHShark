@@ -180,3 +180,6 @@ cython_debug/
 
 # key
 *.key
+
+# logs
+logs/
