@@ -8,6 +8,7 @@ import select
 import sys
 from colorama import Fore, Back, Style
 from styles import cut_line
+from tabulate import tabulate
 
 # 检测操作系统类型
 IS_WINDOWS = sys.platform.startswith('win')
@@ -131,13 +132,22 @@ def _unix_shell(channel):
 def display_server_list():
     servers = get_server_list()
     if servers:
-        cut_line.cut_line() # 分割线
-        print("序号  主机地址              用户名            登录次数    最后登录时间")
-        cut_line.cut_line() # 分割线
+        # 普通格式列表 ------------start-------------
+        # cut_line.cut_line() # 分割线
+        # for idx, (host, username, login_count, last_login) in enumerate(servers, 1):
+        #     print(
+        #         f"{idx:<6}{host:<20}{username:<16}{login_count:<10}{last_login or '从未登录'}")
+        # cut_line.cut_line() # 分割线
+        # 普通格式列表 ------------end---------------
+        
+        # 使用了表格格式 ----------start-------------
+        table = []
         for idx, (host, username, login_count, last_login) in enumerate(servers, 1):
-            print(
-                f"{idx:<6}{host:<20}{username:<16}{login_count:<10}{last_login or '从未登录'}")
-
+            table.append([idx, host, username, login_count, last_login or '从未登录'])
+        
+        headers = ["序号", "主机地址", "用户名", "登录次数", "最后登录时间"]
+        print(tabulate(table, headers, tablefmt="grid"))
+        # 使用了表格格式 ----------end---------------
         try:
             choice = input("\n请选择服务器序号 (或按Enter手动输入新服务器): ")
             if choice.strip():
