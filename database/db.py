@@ -7,6 +7,7 @@ import base64
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from utils import logUtils
+from datetime import datetime
 
 Base = declarative_base()
 
@@ -133,10 +134,9 @@ def record_login(host, username):
         credential = session.query(Credential).filter_by(
             host=host, username=username).first()
         if credential:
-            login = LoginHistory(credential=credential)
+            login = LoginHistory(credential=credential, login_time=datetime.now())
             session.add(login)
             session.commit()
-            # print(f"登录记录保存成功: {host}, {username}")
             logUtils.logging_and_print(f"登录记录保存成功: {host}, {username}")
         else:
             logUtils.logging_and_print_warning(f"未找到相关凭证，无法记录登录")
