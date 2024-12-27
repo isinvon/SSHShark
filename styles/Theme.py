@@ -2,6 +2,8 @@ from enum import Enum
 
 from colorama import Fore
 
+from utils.JsonLoadUtils import JsonLoadUtils
+
 
 class Theme(Enum):
     """ 主题颜色 """
@@ -39,7 +41,24 @@ class Theme(Enum):
         """ 获取所有枚举值 """
         return [member.value for member in cls]
 
-# if __name__ == '__main__':
-    # theme = Theme
-    # 获取所有枚举名称
-    # print(theme.get_names())
+    @classmethod
+    def get_theme(cls):
+        """ 获取主题颜色 """
+        theme_name = cls._read_config_file()
+        for member in cls:
+            if member.name == theme_name:
+                return member.value
+        return Fore.RESET  # 如果找不到匹配项，则返回默认值
+
+    @staticmethod
+    def _read_config_file() -> str:
+        """ 从配置文件中读取主题颜色 """
+        # 注意：这里需要确保JsonLoadUtils已经正确定义并且可以导入。
+        json_load = JsonLoadUtils()
+        theme = json_load.get_data('style', 'theme')
+        return theme
+
+    @classmethod
+    def fore_reset(cls):
+        """ 临时重置颜色 """
+        return Fore.RESET
