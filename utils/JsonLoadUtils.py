@@ -99,6 +99,8 @@ class JsonLoadUtils:
         """
         更新部分数据（仅适用于字典类型的数据）。
         
+        注意: 即使 update_data 成功修改了 self.data，如果未调用 save 方法，更新不会写入到文件中。
+        
         :param updates: 包含更新项的字典
         """
         if not isinstance(self.data, dict):
