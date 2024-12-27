@@ -4,6 +4,7 @@
   "description": "A elegant python-based SSH CLI Tool",
   "author": "sinvon",
   "license": "MIT",
+  "author_url": "https://github.com/isinvon",
   "email": "2021469084#qq.com",
   "repo": "https://github.com/isinvon/SSHShark",
   "git": "https://github.com/isinvon/SSHShark.git",
