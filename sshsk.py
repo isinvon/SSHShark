@@ -1,6 +1,6 @@
 import argparse
 from database.db import record_login
-from ssh_client.client import login_to_server, upload_file, download_file, start_session
+from ssh_client.client import login_to_server, download_file, start_session, upload_file_with_selection
 from developer_only.author import init
 from styles import cut_line
 import curses
@@ -12,7 +12,8 @@ def main():
     
     # 添加参数解析逻辑
     parser.add_argument('--login', action='store_true', help='登录到服务器')
-    parser.add_argument('--upload', type=str, help='上传文件到服务器')
+    # parser.add_argument('--upload', type=str, help='上传文件到服务器')
+    parser.add_argument('--upload', action='store_true', help='上传文件到服务器')
     parser.add_argument('--download', type=str, help='从服务器下载文件')
     parser.add_argument('--log', action='store_true', help='显示日志')
     parser.add_argument('--theme', action='store_true', help='切换主题')
@@ -27,7 +28,8 @@ def main():
             cut_line.cut_line()
             start_session(client)
     elif args.upload:  # 上传
-        upload_file(args.upload)
+        # upload_file(args.upload)
+        upload_file_with_selection()
     elif args.download:  # 下载
         download_file(args.download)
     elif args.log:  # 显示日志

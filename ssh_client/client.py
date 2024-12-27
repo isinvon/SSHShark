@@ -208,29 +208,100 @@ def login_to_server():
         return None,None,None
 
 
-def upload_file(file_path):
-    host = input("Enter the server host: ")
-    username = input("Enter your username: ")
-    password = get_password(host, username)
+# def upload_file(file_path):
+#     host = input("Enter the server host: ")
+#     username = input("Enter your username: ")
+#     password = get_password(host, username)
 
-    if not password:
-        password = input("Enter your password: ")
-        save_password(host, username, password)
+#     if not password:
+#         password = input("Enter your password: ")
+#         save_password(host, username, password)
 
+#     try:
+#         client = connect_to_server(host, username, password)
+
+#         sftp = client.open_sftp()
+#         remote_path = input("Enter the remote path to upload the file: ")
+#         with tqdm(total=100, desc="Uploading", unit="%", ncols=100) as pbar:
+#             sftp.put(file_path, remote_path)
+#             pbar.update(100)
+
+#         sftp.close()
+#         client.close()
+#         print("File uploaded successfully!")
+#     except Exception as e:
+#         print(f"Failed to upload file: {e}")
+
+def upload_file_with_selection():
+    """
+    实现文件上传功能。
+    用户通过选择服务器、输入目标路径和本地文件路径完成文件上传。
+    """
     try:
+        # Step 1: 显示服务器列表并选择服务器
+        selected_host, selected_username = display_server_list()
+
+        # 如果没有选择已有服务器，要求手动输入
+        host = selected_host or input("请输入服务器地址: ")
+        username = selected_username or input("请输入用户名: ")
+
+        # Step 2: 获取或输入密码
+        saved_password = get_password(host, username)
+        if not saved_password:
+            password = input("请输入密码: ")
+            save_password(host, username, password)
+        else:
+            password = saved_password
+
+        # Step 3: 连接到服务器
         client = connect_to_server(host, username, password)
+        logUtils.logging_and_print("成功连接到服务器")
 
-        sftp = client.open_sftp()
-        remote_path = input("Enter the remote path to upload the file: ")
-        with tqdm(total=100, desc="Uploading", unit="%", ncols=100) as pbar:
-            sftp.put(file_path, remote_path)
-            pbar.update(100)
+        try:
+            # Step 4: 打开SFTP会话
+            sftp = client.open_sftp()
 
-        sftp.close()
-        client.close()
-        print("File uploaded successfully!")
+            # Step 5: 用户输入上传文件信息
+            local_path = input("请输入本地文件路径: ").strip()
+            if not os.path.exists(local_path):
+                print("本地文件路径无效或文件不存在!")
+                return
+
+            remote_path = input("请输入服务器上的目标路径: ").strip()
+            if not remote_path:
+                print("目标路径不能为空!")
+                return
+
+            # Step 6: 上传文件并显示进度条
+            file_size = os.path.getsize(local_path)
+
+            with tqdm(total=file_size, desc="上传进度", unit="B", unit_scale=True, ncols=100) as pbar:
+                def progress_callback(transferred, total):
+                    pbar.update(transferred - pbar.n)
+
+                # 判断目标路径是否是文件夹，如果是文件夹，则创建文件路径
+                if remote_path.endswith("/"):  # 如果目标路径以斜杠结尾，认为是目录
+                    remote_path = os.path.join(remote_path, os.path.basename(local_path))  # 组合成完整路径
+
+                sftp.put(local_path, remote_path, callback=progress_callback)
+            
+            logUtils.logging_and_print(f"文件上传成功: {local_path} -> {remote_path}")
+
+        except (paramiko.SFTPError, paramiko.SSHException) as e:
+            logUtils.logging_and_print_error(f"上传过程中发生错误: {str(e)}")
+        except Exception as e:
+            import traceback
+            logUtils.logging_and_print_error(f"未知错误: {traceback.format_exc()}")
+        finally:
+            sftp.close()
+            client.close()
+
+    except KeyboardInterrupt:
+        logUtils.logging_and_print("操作已被用户中断")
     except Exception as e:
-        print(f"Failed to upload file: {e}")
+        logUtils.logging_and_print_error(f"上传过程出错: {str(e)}")
+    finally:
+        cut_line.cut_line_msg("end")
 
 
 def download_file(file_path):
