@@ -1,4 +1,4 @@
-from colorama import Fore, Back, Style
+from colorama import Style
 
 from styles.Theme import Theme
 
