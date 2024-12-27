@@ -32,6 +32,17 @@ class JsonLoadUtils:
             raise ValueError(f"Failed to decode JSON from {self.file_path}. Details: {e}")
         except Exception as e:
             raise e
+        
+    def get_all_data(self) -> Union[Dict, List]:
+        """Get all data from the JSON file."""
+        try:
+            with open(self.file_path, 'r', encoding='utf-8') as file:
+                self.data = json.load(file)
+            return self.data
+        except json.JSONDecodeError as e:
+            raise ValueError(f"Failed to decode JSON from {self.file_path}. Details: {e}")
+        except Exception as e:
+            raise e
     
     def save(self, data: Any, indent: int = 4, ensure_ascii: bool = False) -> None:
         """
