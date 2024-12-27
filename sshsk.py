@@ -5,10 +5,13 @@ from developer_only.author import init
 from styles import cut_line
 import curses
 from utils import aboutUtils, changeThemeUtils, viewLogUtils
+from utils.JsonLoadUtils import JsonLoadUtils
 
 
 def main():
-    parser = argparse.ArgumentParser(description='SSHShark - 一个友好的SSH客户端工具')
+    json_load = JsonLoadUtils()
+    description = json_load.get_data('description')
+    parser = argparse.ArgumentParser(description=description)
     
     # 添加参数解析逻辑
     parser.add_argument('--login', action='store_true', help='登录到服务器')
@@ -34,10 +37,10 @@ def main():
     elif args.download:  # 下载
         # download_file(args.download)
         download_file_with_selection()
-    elif args.log:  # 显示日志
-        cut_line.cut_line()
-        curses.wrapper(viewLogUtils.display_log)  # 使用 curses.wrapper 执行日志查看功能
-        cut_line.cut_line()
+    # elif args.log:  # 显示日志
+    #     cut_line.cut_line()
+    #     curses.wrapper(viewLogUtils.display_log)  # 使用 curses.wrapper 执行日志查看功能
+    #     cut_line.cut_line()
     elif args.theme:
         cut_line.cut_line()
         changeThemeUtils.list_theme_and_select()
