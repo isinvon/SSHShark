@@ -303,27 +303,82 @@ def upload_file_with_selection():
     finally:
         cut_line.cut_line_msg("end")
 
-
-def download_file(file_path):
-    host = input("Enter the server host: ")
-    username = input("Enter your username: ")
-    password = get_password(host, username)
-
-    if not password:
-        password = input("Enter your password: ")
-        save_password(host, username, password)
-
+def download_file_with_selection():
+    """
+    实现文件下载功能。
+    用户通过选择服务器、输入目标路径和本地文件路径完成文件下载到本地。
+    """
     try:
+        # Step 1: 显示服务器列表并选择服务器
+        selected_host, selected_username = display_server_list()
+
+        # 如果没有选择已有服务器，要求手动输入
+        host = selected_host or input("请输入服务器地址: ")
+        username = selected_username or input("请输入用户名: ")
+
+        # Step 2: 获取或输入密码
+        saved_password = get_password(host, username)
+        if not saved_password:
+            password = input("请输入密码: ")
+            save_password(host, username, password)
+        else:
+            password = saved_password
+
+        # Step 3: 连接到服务器
         client = connect_to_server(host, username, password)
+        logUtils.logging_and_print("成功连接到服务器")
 
-        sftp = client.open_sftp()
-        local_path = input("Enter the local path to save the file: ")
-        with tqdm(total=100, desc="Downloading", unit="%", ncols=100) as pbar:
-            sftp.get(file_path, local_path)
-            pbar.update(100)
+        try:
+            # Step 4: 打开SFTP会话
+            sftp = client.open_sftp()
 
-        sftp.close()
-        client.close()
-        print("File downloaded successfully!")
+            # Step 5: 用户输入下载文件信息
+            remote_path = input("请输入服务器上的文件路径: ").strip()
+            if not remote_path:
+                print("目标路径不能为空!")
+                return
+
+            # 检查文件是否存在
+            try:
+                sftp.stat(remote_path)  # 尝试获取文件的状态
+            except FileNotFoundError:
+                print("远程文件路径无效或文件不存在!")
+                return
+
+            local_path = input("请输入本地文件存储路径: ").strip()
+            if not local_path:
+                print("本地路径不能为空!")
+                return
+
+            # 如果本地路径是目录，我们需要构造一个完整的文件路径
+            if os.path.isdir(local_path):
+                # 从远程路径中提取文件名
+                file_name = os.path.basename(remote_path)
+                local_path = os.path.join(local_path, file_name)
+
+            # Step 6: 下载文件并显示进度条
+            file_size = sftp.stat(remote_path).st_size
+
+            with tqdm(total=file_size, desc="下载进度", unit="B", unit_scale=True, ncols=100) as pbar:
+                def progress_callback(transferred, total):
+                    pbar.update(transferred - pbar.n)
+
+                sftp.get(remote_path, local_path, callback=progress_callback)
+
+            logUtils.logging_and_print(f"文件下载成功: {remote_path} -> {local_path}")
+
+        except (paramiko.SFTPError, paramiko.SSHException) as e:
+            logUtils.logging_and_print_error(f"下载过程中发生错误: {str(e)}")
+        except Exception as e:
+            import traceback
+            logUtils.logging_and_print_error(f"未知错误: {traceback.format_exc()}")
+        finally:
+            sftp.close()
+            client.close()
+
+    except KeyboardInterrupt:
+        logUtils.logging_and_print("操作已被用户中断")
     except Exception as e:
-        print(f"Failed to download file: {e}")
+        logUtils.logging_and_print_error(f"下载过程出错: {str(e)}")
+    finally:
+        cut_line.cut_line_msg("end")
