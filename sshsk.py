@@ -4,7 +4,7 @@ from ssh_client.client import login_to_server, upload_file, download_file, start
 from developer_only.author import init
 from styles import cut_line
 import curses
-from utils import aboutUtils, viewLogUtils
+from utils import aboutUtils, changeThemeUtils, viewLogUtils
 
 
 def main():
@@ -15,6 +15,7 @@ def main():
     parser.add_argument('--upload', type=str, help='上传文件到服务器')
     parser.add_argument('--download', type=str, help='从服务器下载文件')
     parser.add_argument('--log', action='store_true', help='显示日志')
+    parser.add_argument('--theme', action='store_true', help='切换主题')
     parser.add_argument('--about', action='store_true', help='关于信息')
     
     args = parser.parse_args()
@@ -32,6 +33,10 @@ def main():
     elif args.log:  # 显示日志
         cut_line.cut_line()
         curses.wrapper(viewLogUtils.display_log)  # 使用 curses.wrapper 执行日志查看功能
+        cut_line.cut_line()
+    elif args.theme:
+        cut_line.cut_line()
+        changeThemeUtils.list_theme_and_select()
         cut_line.cut_line()
     elif args.about:  # 显示关于
         aboutUtils.print_about_table()
