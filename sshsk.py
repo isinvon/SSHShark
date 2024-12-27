@@ -16,7 +16,7 @@ def main():
     parser.add_argument('--upload', action='store_true', help='上传文件到服务器')
     # parser.add_argument('--download', type=str, help='从服务器下载文件')
     parser.add_argument('--download', action='store_true', help='从服务器下载文件')
-    parser.add_argument('--log', action='store_true', help='显示日志')
+    # parser.add_argument('--log', action='store_true', help='显示日志')
     parser.add_argument('--theme', action='store_true', help='切换主题')
     parser.add_argument('--about', action='store_true', help='关于信息')
     
