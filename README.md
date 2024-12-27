@@ -1,6 +1,6 @@
-# SSHShark
+<img src="image/sshsk ico.png"/>
 
-SSHShark 是一个用户友好的 SSH 客户端工具，提供了便捷的服务器管理、文件传输功能，并支持密码安全存储。
+SSHShark 是一个优雅的 SSH 命令行工具，提供了便捷的服务器管理、文件传输功能，并支持密码安全存储 ^_^
 
 ### 特性 ✨
 
@@ -10,19 +10,49 @@ SSHShark 是一个用户友好的 SSH 客户端工具，提供了便捷的服务
 - 📤 文件上传下载功能
 - 🖥️ 交互式 SSH 终端
 - 🌈 支持 Windows 和 Unix 系统
+- 📒日志记录 (于项目的`logs/`下, 根据日期切割)
 
 ### 安装 🚀
 
-1. 克隆仓库：
+#### window
 
-### 服务器管理
+```bash
+git clone https://github.com/isinvon/SSHShark.git
+
+cd ./SSHShark
+
+./scripts/install.bat
+```
+
+#### linux/macos
+
+```bash
+git clone https://github.com/isinvon/SSHShark.git
+
+cd ./SSHShark
+
+./scripts/install.sh
+```
+
+### 效果 🌸
+
+<img src="image/sshsk help.png"/>
+<img src="image/ssh connect server.png"/>
+<img src="image/sshsk login.png"/>
+<img src="image/sshsk about.png"/>
+<img src="image/sshsk select theme.png"/>
+<img src="image/sshsk login after select theme.png"/>
+<img src="image/sshsk about after select theme.png"/>
+<img src="image/sshsk about after select theme lightcyan.png"/>
+
+### 服务器管理 ⚙️
 
 - 首次连接服务器时，会自动保存加密后的密码
 - 后续连接同一服务器时将自动使用保存的密码
 - 如果保存的密码失效，会提示输入新密码
 - 可以通过序号快速选择已保存的服务器
 
-### 详细功能说明
+### 详细功能说明 📘
 
 #### 1. 服务器列表管理
 
@@ -53,13 +83,13 @@ SSHShark 是一个用户友好的 SSH 客户端工具，提供了便捷的服务
 - 加密密钥单独存储在本地文件中
 - 不会明文存储任何密码
 
-### 密码存储
+### 密码存储 🔑
 
 - 使用 Fernet 对称加密算法
 - 加密密钥单独存储
 - 数据库使用 SQLite 存储加密后的凭据
 
-### 数据位置
+### 数据位置 🌐
 
 - 数据库文件：`ssh_credentials.db`
 - 加密密钥：`encryption.key`
@@ -72,59 +102,12 @@ SSHShark 是一个用户友好的 SSH 客户端工具，提供了便捷的服务
 - tqdm: 进度条显示
 - sqlite3: 数据存储
 
-## 开发计划 🚧
-
-- [ ] 添加密钥认证支持
-- [ ] 实现服务器分组管理
-- [ ] 添加配置文件支持
-- [ ] 支持批量操作功能
-- [ ] 添加图形用户界面
-
-## 系统要求 💻
-
-- Python 3.6+
-- Windows/Linux/macOS
-
-## 贡献 🤝
-
-欢迎提交 Issue 和 Pull Request！
-
 ## 许可证 📄
 
 本项目采用 MIT 许可证。详见 [LICENSE](LICENSE) 文件。
-
-## 更新日志 📝
-
-### v1.0.0
-
-- 初始版本发布
-- 支持基本的 SSH 连接管理
-- 实现文件传输功能
-- 添加服务器列表显示
-- 支持密码安全存储
-
-## 常见问题 ❓
-
-**Q: 如何备份我的服务器信息？**
-A: 备份 `ssh_credentials.db` 和 `encryption.key` 文件即可。
-
-**Q: 密码存储安全吗？**
-A: 所有密码都经过 Fernet 加密后存储，只要保管好加密密钥文件，就是安全的。
-
-**Q: 如何清除所有保存的信息？**
-A: 删除 `ssh_credentials.db` 和 `encryption.key` 文件即可。
-
-**Q: 支持哪些 SSH 功能？**
-A: 目前支持基本的终端操作和文件传输，后续会添加更多功能。
 
 ## 作者 👨‍💻
 
-Sinvon - 2021469084@qq.com
-
-## 许可证 📄
-
-本项目采用 MIT 许可证。详见 [LICENSE](LICENSE) 文件。
-
----
+Sinvon <2021469084@qq.com>
 
 如果觉得这个项目有帮助，欢迎给个 Star ⭐️
