@@ -1,5 +1,6 @@
 
 from styles.Theme import Theme
+from utils import logUtils
 from utils.JsonLoadUtils import JsonLoadUtils
 
 """ 颜色主题切换 """
@@ -7,7 +8,7 @@ from utils.JsonLoadUtils import JsonLoadUtils
 def _update_theme(new_theme: str) -> None:
     """ 切换主题色 """
     if new_theme not in Theme.get_names():
-        print(f"Invalid theme name: {new_theme}")
+        print(f"无效的主题 : {new_theme}")
         return
     json_load = JsonLoadUtils()
     # 更新配置文件
@@ -20,6 +21,7 @@ def _update_theme(new_theme: str) -> None:
     )
     # 保存修改后的数据(不调用save的话不会保存修改)
     json_load.save(json_load.data)
+    logUtils.logging_and_print(f"主题已被切换为 {new_theme}")
 
 
 
