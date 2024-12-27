@@ -16,7 +16,7 @@ class Theme(Enum):
     blue = Fore.BLUE  # \033[44m
     magenta = Fore.MAGENTA  # \033[45m
     cyan = Fore.CYAN  # \033[46m
-    white = Fore.WHITE  # \033[47m
+    white = Fore.RESET  # 由于Fore.WHITE和Fore.LIGHTWHITE_EX效果相同, 所以使用Fore.RESET代替作为默认的主题颜色
 
     # background - height light
     lightblack = Fore.LIGHTBLACK_EX  # \033[100m
