@@ -1,4 +1,6 @@
 
+from colorama import Style
+from styles.Theme import Theme
 from .JsonLoadUtils import JsonLoadUtils
 from utils import logUtils
 from tabulate import tabulate
@@ -47,4 +49,4 @@ def _extract_format_table():
 def print_about_table():
     table = _extract_format_table()
     logUtils.logging_no_print("关于信息正在输出...")
-    print(tabulate(table, tablefmt="fancy_grid"))
+    print(Theme.get_theme() + tabulate(table, tablefmt="fancy_grid") + Style.RESET_ALL)
