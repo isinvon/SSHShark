@@ -1,17 +1,17 @@
 @echo off
-rem SSHShark - Windows å¯åŠ¨è„šæœ¬
+rem SSHShark - Windows Æô¶¯½Å±¾
 
-rem è®¾ç½® Python çŽ¯å¢ƒï¼ˆå¦‚æžœæœ‰è™šæ‹ŸçŽ¯å¢ƒï¼Œæ›¿æ¢è·¯å¾„ï¼‰
+rem ÉèÖÃ Python »·¾³£¨Èç¹ûÓÐÐéÄâ»·¾³£¬Ìæ»»Â·¾¶£©
 set PYTHON_PATH=python
 
-rem æ£€æŸ¥æ˜¯å¦ä¼ é€’äº†å‚æ•°
+rem ¼ì²éÊÇ·ñ´«µÝÁË²ÎÊý
 if "%~1"=="" (
-    echo è¯·ä¼ å…¥å‚æ•°è¿è¡Œ SSHShark
-    echo ä¾‹å¦‚: sshsk.bat --login
+    echo Çë´«Èë²ÎÊýÔËÐÐ SSHShark
+    echo ÀýÈç: sshsk.bat --login
     goto end
 )
 
-rem æ‰§è¡Œ Python ä¸»è„šæœ¬
+rem Ö´ÐÐ Python Ö÷½Å±¾
 %PYTHON_PATH% sshsk.py %*
 
 :end
