@@ -58,15 +58,42 @@ class JsonLoadUtils:
         except Exception as e:
             raise e
     
-    def get_data(self) -> Union[Dict, List]:
+    def get_data(self, *keys: str) -> Any:
         """
-        获取当前加载的数据。
+        获取当前加载的数据。如果传入了键，则返回对应嵌套字典中的值。
         
-        :return: 当前加载的数据（字典或列表）
+        :param keys: 可选的键路径，用于获取嵌套字典中的值
+        :return: 当前加载的数据（字典或列表），或根据键路径获取的值
+        
+        例如：
+        >>> json_load.get_data('key1', 'key2')
+        
+        示例:
+        >>> 有这么一个文件中的json数据
+            {
+                "key1": {
+                    "key2": "value"
+                }
+            }
+        
+            json_load = JsonLoadUtils()
+            json_load.get_all_data()
+            print(json_load.get_data('key1','key2'))
+            
+            得到：value
+
         """
         if self.data is None:
             raise ValueError("Data has not been loaded yet. Call load() first.")
-        return self.data
+        
+        current_data = self.data
+        for key in keys:
+            if isinstance(current_data, dict) and key in current_data:
+                current_data = current_data[key]
+            else:
+                raise KeyError(f"Key '{key}' not found in the data.")
+        
+        return current_data
     
     def update_data(self, updates: Dict) -> None:
         """
